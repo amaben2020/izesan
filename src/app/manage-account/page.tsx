@@ -17,10 +17,10 @@ const ManageAccount = () => {
   const userToUpdate = users.find((user: any) => user.id === searchedItem);
 
   const [user, setUser] = useState({
-    id: userToUpdate?.id,
-    email: "",
-    role: "user",
-    name: "",
+    id: userToUpdate?.id ?? "",
+    email: userToUpdate?.email ?? "",
+    role: userToUpdate?.role ?? "user",
+    name: userToUpdate?.name ?? "",
   });
   const roles = ["user", "admin"];
   const handleInputChange = (e: any) => {
@@ -99,7 +99,7 @@ const ManageAccount = () => {
               value={user.name}
               onChange={handleInputChange}
               className="p-3 border text-black rounded-sm"
-              placeholder={userToUpdate?.name}
+              placeholder={userToUpdate?.name ?? "Name"}
             />
             <button type="submit" className="p-3 border">
               Update
@@ -113,6 +113,7 @@ const ManageAccount = () => {
             onClick={() => {
               deleteUser(userToUpdate?.id);
               toast.success("User deleted successfully");
+              router.push("/login");
             }}
           >
             Delete

@@ -1,64 +1,54 @@
 "use client";
 
-import Login from "@/components/login";
-import { addUser, getUserList } from "@/services/userService";
+import { TUser, getUserList } from "@/services/userService";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useState } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 function Home() {
-  // lazy initialization
-
   const router = useRouter();
   const users = getUserList();
-  console.log(users);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const id = useId();
+
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
 
   useEffect(() => {
     const userCookie = cookies["user"];
 
-    const userExistsInDb =
+    const userExistsInDb: TUser[] =
       Array.isArray(users) &&
       users?.find((user) => user?.id === userCookie?.id);
 
     if (
       typeof userExistsInDb === "undefined" &&
+      //@ts-ignore
       !userExistsInDb?.email?.length
     ) {
       router.push("/login");
     }
   }, [cookies, router, users]);
 
-  const handleLogin = () => {
-    setLoggedIn(true);
-    addUser({
-      name: "Ben",
-      email: "amaben2020@ds.cc",
-      role: "user",
-      id,
-    });
-    setCookie("user", {
-      name: "Ben",
-      email: "amaben2020@ds.cc",
-      role: "user",
-      id,
-    });
-  };
-
   return (
-    <div className="App">
-      {!loggedIn ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <>
-          <h1>User Management System</h1>
-          {/* <UserList /> */}
-          {/* <AddUser isEmailUnique={isEmailUnique} /> */}
-          {/* <UpdateUser /> */}
-          {/* <DeleteUser /> */}
-        </>
-      )}
+    <div className="p-20 border mx-auto m-10">
+      <h1 className="text-center text-4xl">User Management System</h1>
+
+      <h3 className="text-center text-2xl">View all users </h3>
+      <div>
+        <div className="flex justify-between flex-wrap my-4 mx-auto">
+          {Array.isArray(users) &&
+            users?.length &&
+            users?.map((user) => (
+              <Link
+                href={`manage-account?id=${user?.id}`}
+                key={user.id}
+                className="border-2 p-10 rounded-md flex flex-col gap-y-3"
+              >
+                <p>Name: {user.name}</p>
+                <p>Email: {user.email}</p>
+                <p>Role: {user.role}</p>
+              </Link>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }

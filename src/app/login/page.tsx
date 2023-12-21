@@ -1,15 +1,18 @@
 "use client";
-import { addUser } from "@/services/userService";
+import { addUser, isEmailUnique } from "@/services/userService";
+import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { useCookies } from "react-cookie";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const id = useId();
+  const router = useRouter();
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState({
     id,
     email: "",
-    role: "",
+    role: "user",
     name: "",
   });
   const roles = ["user", "admin"];
@@ -22,9 +25,17 @@ const Login = () => {
     }));
   };
 
-  const handleLogin = () => {
-    addUser(user);
-    setCookie("user", user);
+  const handleLogin = (e: any) => {
+    e.preventDefault();
+    const isEmailUniqueInDB = isEmailUnique(user.email);
+
+    if (isEmailUniqueInDB) {
+      addUser(user);
+      setCookie("user", user);
+      toast.success("User created successfully");
+      router.push("/");
+    }
+    toast.error("User already exists");
   };
 
   return (
@@ -43,10 +54,9 @@ const Login = () => {
         />
         <select
           name="role"
-          value={user.role}
+          value={user.role ?? "user"}
           onChange={handleInputChange}
           className="p-3 border text-black rounded-sm"
-          placeholder="Select a role"
         >
           <option value="" disabled>
             Select a role

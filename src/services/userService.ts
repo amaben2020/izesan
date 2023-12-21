@@ -1,12 +1,11 @@
-type TUser = {
+export type TUser = {
   id: string;
   name: string;
   email: string;
-  role: "user" | "admin";
+  role: string;
 };
 const getUserList = () => {
-  //@ts-ignore
-  const userList = JSON.parse(localStorage?.getItem("users")) || [];
+  const userList = JSON.parse(localStorage?.getItem("users") ?? "") || [];
   return userList;
 };
 

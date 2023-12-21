@@ -28,8 +28,7 @@ const Login = () => {
   const handleLogin = (e: any) => {
     e.preventDefault();
     const isEmailUniqueInDB = isEmailUnique(user.email);
-
-    console.log(isEmailUniqueInDB);
+ 
 
     if (isEmailUniqueInDB) {
       addUser(user);

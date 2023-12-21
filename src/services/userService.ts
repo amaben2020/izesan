@@ -5,6 +5,7 @@ export type TUser = {
   role: string;
 };
 const getUserList = () => {
+  //@ts-ignore
   const userList = JSON.parse(localStorage?.getItem("users")) || [];
   return userList;
 };

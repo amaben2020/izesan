@@ -25,8 +25,6 @@ function Home() {
     }
   }, [cookies, router, userCookie?.id, users]);
 
-  console.log(userCookie);
-
   const IS_ADMIN = userCookie?.role === "admin";
 
   return (

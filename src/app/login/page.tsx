@@ -28,7 +28,7 @@ const Login = () => {
     e.preventDefault();
     const isEmailUniqueInDB = isEmailUnique(user.email);
 
-    console.log(isEmailUniqueInDB);
+ 
 
     const userInDb = getUserList();
 

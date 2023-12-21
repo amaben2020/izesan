@@ -1,5 +1,5 @@
 "use client";
-import { TUser, getUserList, isEmailUnique } from "@/services/userService";
+import { addUser, isEmailUnique } from "@/services/userService";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -15,6 +15,7 @@ const Login = () => {
     role: "user",
     name: "",
   });
+  const roles = ["user", "admin"];
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -30,18 +31,14 @@ const Login = () => {
 
     console.log(isEmailUniqueInDB);
 
-    const userInDb = getUserList();
-
-    const isUserInDb = userInDb.find(
-      (userInDB: TUser) => userInDB.email === user.email,
-    );
-
-    if (isUserInDb.email.length) {
-      toast.success("User logged in successfully");
-      router.push("/");
+    if (isEmailUniqueInDB) {
+      addUser(user);
+      setCookie("user", user);
+      toast.success("User created successfully");
+      router.push("/login");
     }
 
-    if (!isUserInDb.email.length) {
+    if (!isEmailUniqueInDB) {
       toast.error("User already exists");
     }
   };
@@ -60,9 +57,31 @@ const Login = () => {
           className="p-3 border text-black rounded-sm"
           placeholder="Email"
         />
-
+        <select
+          name="role"
+          value={user.role ?? "user"}
+          onChange={handleInputChange}
+          className="p-3 border text-black rounded-sm"
+        >
+          <option value="" disabled>
+            Select a role
+          </option>
+          {roles.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+        <input
+          type="text"
+          name="name"
+          value={user.name}
+          onChange={handleInputChange}
+          className="p-3 border text-black rounded-sm"
+          placeholder="Name"
+        />
         <button type="submit" className="p-3 border">
-          Login
+          Register
         </button>
       </form>
     </div>
